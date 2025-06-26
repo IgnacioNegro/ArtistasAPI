@@ -3,11 +3,11 @@ using EJERCICIOAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace EJERCICIOAPI.Controllers
 {
-    [Route("api/categorias_artistas")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CategoriaController : ControllerBase
     {
@@ -18,88 +18,113 @@ namespace EJERCICIOAPI.Controllers
             _context = context;
         }
 
+        // GET: api/Categoria
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
+        public ActionResult<List<Categoria>> GetCategorias()
         {
-            return await _context.Categorias.Include(c => c.Artistas).ToListAsync();
+            // Incluyo Artistas relacionados
+            return _context.Categorias.Include(c => c.Artistas).ToList();
         }
 
+        // GET: api/Categoria/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(int id)
+        public ActionResult<Categoria> GetCategoria(int id)
         {
-            var categoria = await _context.Categorias
-                                          .Include(c => c.Artistas)
-                                          .FirstOrDefaultAsync(c => c.Id == id);
+            if (id <= 0)
+                return BadRequest("Id no puede ser menor o igual a cero");
+
+            var categoria = _context.Categorias.Include(c => c.Artistas).FirstOrDefault(c => c.Id == id);
 
             if (categoria == null)
-            {
-                return NotFound();
-            }
+                return NotFound($"Categoría con Id ({id}) no fue encontrada");
 
-            return categoria;
+            return Ok(categoria);
         }
 
+        // POST: api/Categoria
         [HttpPost]
-        public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
+        public ActionResult<Categoria> PostCategoria([FromBody] Categoria parametrosCategoria)
         {
-            if (categoria == null)
-            {
-                return BadRequest();
-            }
+            if (parametrosCategoria == null)
+                return BadRequest("El cuerpo del request estaba vacío");
 
-            _context.Categorias.Add(categoria);
-            await _context.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(parametrosCategoria.Nombre))
+                return BadRequest("El nombre de la categoría es obligatorio");
 
-            return CreatedAtAction(nameof(GetCategoria), new { id = categoria.Id }, categoria);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoria(int id, Categoria categoria)
-        {
-            if (id != categoria.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(categoria).State = EntityState.Modified;
+            // Verificar si ya existe una categoria con ese nombre
+            var categoriaExistente = _context.Categorias.FirstOrDefault(c => c.Nombre == parametrosCategoria.Nombre);
+            if (categoriaExistente != null)
+                return BadRequest("Ya existe una categoría con ese nombre");
 
             try
             {
-                await _context.SaveChangesAsync();
+                _context.Categorias.Add(parametrosCategoria);
+                _context.SaveChanges();
+                return Ok(parametrosCategoria);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!CategoriaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
-
-            return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategoria(int id)
+        // PUT: api/Categoria/5
+        [HttpPut("{id}")]
+        public ActionResult<Categoria> PutCategoria(int id, [FromBody] Categoria parametrosCategoria)
         {
-            var categoria = await _context.Categorias.FindAsync(id);
+            if (parametrosCategoria == null)
+                return BadRequest("El cuerpo del request estaba vacío");
+
+            if (id <= 0 || id != parametrosCategoria.Id)
+                return BadRequest("Id inválido o no coincide con el Id de la categoría");
+
+            var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
             if (categoria == null)
+                return NotFound("No existe una categoría con ese Id");
+
+            if (string.IsNullOrWhiteSpace(parametrosCategoria.Nombre))
+                return BadRequest("El nombre de la categoría es obligatorio");
+
+            var categoriaPorNombre = _context.Categorias.FirstOrDefault(c => c.Nombre == parametrosCategoria.Nombre && c.Id != id);
+            if (categoriaPorNombre != null)
+                return BadRequest("Ya existe una categoría con ese nombre");
+
+            categoria.Nombre = parametrosCategoria.Nombre;
+
+            try
             {
-                return NotFound();
+                _context.Categorias.Update(categoria);
+                _context.SaveChanges();
+                return Ok(categoria);
             }
-
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool CategoriaExists(int id)
+        // DELETE: api/Categoria/5
+        [HttpDelete("{id}")]
+        public ActionResult<bool> DeleteCategoria(int id)
         {
-            return _context.Categorias.Any(e => e.Id == id);
+            if (id <= 0)
+                return BadRequest("Es necesario un Id válido");
+
+            var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
+
+            if (categoria == null)
+                return NotFound("Categoría no encontrada");
+
+            try
+            {
+                _context.Categorias.Remove(categoria);
+                _context.SaveChanges();
+                return Ok(true);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
