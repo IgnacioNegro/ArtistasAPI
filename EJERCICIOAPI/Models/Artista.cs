@@ -12,15 +12,20 @@ namespace EJERCICIOAPI.Models
         public string? Nacionalidad { get; set; }
         public int? CategoriaId { get; set; }
         public Categoria? Categoria { get; set; }
+        public int? UsuarioId { get; set; }
+        public Usuario ? Usuario { get; set; }
+
+        public List<Espectaculo> Espectaculos { get; set; } = new List<Espectaculo>(); 
 
         public Artista() { }
-        public Artista(string nombre, string genero, DateOnly fechaNacimiento, string nacionalidad, int categoriaId)
+        public Artista(string nombre, string genero, DateOnly fechaNacimiento, string nacionalidad, int categoriaId, int usuarioId)
         {
             Nombre = nombre;
             Genero = genero;
             FechaNacimiento = fechaNacimiento;
             Nacionalidad = nacionalidad;
             CategoriaId = categoriaId;
+            UsuarioId = usuarioId;
         }
     }
 }

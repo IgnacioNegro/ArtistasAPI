@@ -4,6 +4,7 @@ using EJERCICIOAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EJERCICIOAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701000212_Funcionando")]
+    partial class Funcionando
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,7 @@ namespace EJERCICIOAPI.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UsuarioId")
                         .HasColumnType("int");
@@ -53,12 +56,9 @@ namespace EJERCICIOAPI.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Artistas", (string)null);
+                    b.ToTable("Artistas");
                 });
 
             modelBuilder.Entity("EJERCICIOAPI.Models.Categoria", b =>
@@ -74,42 +74,14 @@ namespace EJERCICIOAPI.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
-                    b.ToTable("Categorias", (string)null);
-                });
-
-            modelBuilder.Entity("EJERCICIOAPI.Models.Espectaculo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ArtistaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Fechayhora")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Titulo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArtistaId");
-
-                    b.ToTable("Espectaculos", (string)null);
+                    b.ToTable("Categorias");
                 });
 
-            modelBuilder.Entity("EJERCICIOAPI.Models.Usuario", b =>
+            modelBuilder.Entity("EJERCICIOAPI.Models.Usuarios", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,16 +91,13 @@ namespace EJERCICIOAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordEncriptado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Usuarios");
                 });
@@ -137,33 +106,15 @@ namespace EJERCICIOAPI.Migrations
                 {
                     b.HasOne("EJERCICIOAPI.Models.Categoria", "Categoria")
                         .WithMany("Artistas")
-                        .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("CategoriaId");
 
-                    b.HasOne("EJERCICIOAPI.Models.Usuario", "Usuario")
+                    b.HasOne("EJERCICIOAPI.Models.Usuarios", "Usuario")
                         .WithMany("Artistas")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UsuarioId");
 
                     b.Navigation("Categoria");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("EJERCICIOAPI.Models.Espectaculo", b =>
-                {
-                    b.HasOne("EJERCICIOAPI.Models.Artista", "Artista")
-                        .WithMany("Espectaculos")
-                        .HasForeignKey("ArtistaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Artista");
-                });
-
-            modelBuilder.Entity("EJERCICIOAPI.Models.Artista", b =>
-                {
-                    b.Navigation("Espectaculos");
                 });
 
             modelBuilder.Entity("EJERCICIOAPI.Models.Categoria", b =>
@@ -171,7 +122,7 @@ namespace EJERCICIOAPI.Migrations
                     b.Navigation("Artistas");
                 });
 
-            modelBuilder.Entity("EJERCICIOAPI.Models.Usuario", b =>
+            modelBuilder.Entity("EJERCICIOAPI.Models.Usuarios", b =>
                 {
                     b.Navigation("Artistas");
                 });

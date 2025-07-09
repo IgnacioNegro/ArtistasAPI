@@ -1,5 +1,6 @@
 using EJERCICIOAPI.Data;
 using EJERCICIOAPI.Models;
+using EJERCICIOAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -20,30 +21,44 @@ namespace EJERCICIOAPI.Controllers
 
         // GET: api/Categoria
         [HttpGet]
-        public ActionResult<List<Categoria>> GetCategorias()
+        public ActionResult<List<CategoriaDTO>> GetCategorias()
         {
-            // Incluyo Artistas relacionados
-            return _context.Categorias.Include(c => c.Artistas).ToList();
+            var categoriasDTO = _context.Categorias
+                .Select(c => new CategoriaDTO
+                {
+                    Id = c.Id,
+                    Nombre = c.Nombre
+                })
+                .ToList();
+
+            return Ok(categoriasDTO);
         }
 
         // GET: api/Categoria/5
         [HttpGet("{id}")]
-        public ActionResult<Categoria> GetCategoria(int id)
+        public ActionResult<CategoriaDTO> GetCategoria(int id)
         {
             if (id <= 0)
                 return BadRequest("Id no puede ser menor o igual a cero");
 
-            var categoria = _context.Categorias.Include(c => c.Artistas).FirstOrDefault(c => c.Id == id);
+            var categoria = _context.Categorias
+                .Where(c => c.Id == id)
+                .Select(c => new CategoriaDTO
+                {
+                    Id = c.Id,
+                    Nombre = c.Nombre,
+                
+                })
+                .FirstOrDefault();
 
             if (categoria == null)
                 return NotFound($"Categoría con Id ({id}) no fue encontrada");
 
             return Ok(categoria);
         }
-
         // POST: api/Categoria
         [HttpPost]
-        public ActionResult<Categoria> PostCategoria([FromBody] Categoria parametrosCategoria)
+        public ActionResult<CategoriaDTO> PostCategoria([FromBody] CategoriaPostDTO parametrosCategoria)
         {
             if (parametrosCategoria == null)
                 return BadRequest("El cuerpo del request estaba vacío");
@@ -51,16 +66,27 @@ namespace EJERCICIOAPI.Controllers
             if (string.IsNullOrWhiteSpace(parametrosCategoria.Nombre))
                 return BadRequest("El nombre de la categoría es obligatorio");
 
-            // Verificar si ya existe una categoria con ese nombre
             var categoriaExistente = _context.Categorias.FirstOrDefault(c => c.Nombre == parametrosCategoria.Nombre);
             if (categoriaExistente != null)
                 return BadRequest("Ya existe una categoría con ese nombre");
 
+            var nuevaCategoria = new Categoria
+            {
+                Nombre = parametrosCategoria.Nombre
+            };
+
             try
             {
-                _context.Categorias.Add(parametrosCategoria);
+                _context.Categorias.Add(nuevaCategoria);
                 _context.SaveChanges();
-                return Ok(parametrosCategoria);
+
+                var resultadoDTO = new CategoriaDTO
+                {
+                    Id = nuevaCategoria.Id,
+                    Nombre = nuevaCategoria.Nombre
+                };
+
+                return Ok(resultadoDTO);
             }
             catch (System.Exception ex)
             {
@@ -68,15 +94,16 @@ namespace EJERCICIOAPI.Controllers
             }
         }
 
+
         // PUT: api/Categoria/5
         [HttpPut("{id}")]
-        public ActionResult<Categoria> PutCategoria(int id, [FromBody] Categoria parametrosCategoria)
+        public ActionResult<CategoriaDTO> PutCategoria(int id, [FromBody] CategoriaPostDTO parametrosCategoria)
         {
             if (parametrosCategoria == null)
                 return BadRequest("El cuerpo del request estaba vacío");
 
-            if (id <= 0 || id != parametrosCategoria.Id)
-                return BadRequest("Id inválido o no coincide con el Id de la categoría");
+            if (id <= 0)
+                return BadRequest("Id inválido");
 
             var categoria = _context.Categorias.FirstOrDefault(c => c.Id == id);
             if (categoria == null)
@@ -95,7 +122,14 @@ namespace EJERCICIOAPI.Controllers
             {
                 _context.Categorias.Update(categoria);
                 _context.SaveChanges();
-                return Ok(categoria);
+
+                var resultadoDTO = new CategoriaDTO
+                {
+                    Id = categoria.Id,
+                    Nombre = categoria.Nombre
+                };
+
+                return Ok(resultadoDTO);
             }
             catch (System.Exception ex)
             {

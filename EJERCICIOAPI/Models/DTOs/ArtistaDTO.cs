@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Artistas.Models.DTOs
+namespace EJERCICIOAPI.Models.DTOs
 {
     public class ArtistaDTO
     {
