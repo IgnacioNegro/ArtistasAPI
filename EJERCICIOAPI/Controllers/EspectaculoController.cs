@@ -97,13 +97,18 @@ namespace EJERCICIOAPI.Controllers
             if (espectaculoExistenste != null)
                 return BadRequest("Ya existe un espectaculo con ese nombre");
 
-
+            Artista? artista= _context.Artistas.FirstOrDefault(a => a.Id == parametrosEspectaculo.ArtistaId);
+            if (artista == null)
+            {
+                return BadRequest("El artista no existe o no es válido. Por favor, verifique el ID del artista.");
+            }
             Espectaculo nuevoEspectaculo = new Espectaculo
             {
                 Titulo = parametrosEspectaculo.Titulo,
                 Fechayhora = parametrosEspectaculo.Fechayhora,
                 ArtistaId = parametrosEspectaculo.ArtistaId,
-              
+                ArtistaNombre = artista.Nombre
+
             };
 
 
@@ -113,12 +118,13 @@ namespace EJERCICIOAPI.Controllers
             {
                 _context.SaveChanges();
                 parametrosEspectaculo.Id = nuevoEspectaculo.Id;
+
                 return Ok(parametrosEspectaculo);
             }
 
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
 
             }
         }
@@ -129,12 +135,12 @@ namespace EJERCICIOAPI.Controllers
         {
             if (parametrosEspectaculo == null)
                 return BadRequest("El cuerpo del request estaba vacío");
-
-            if (id <= 0 || id != parametrosEspectaculo.Id)
-                return BadRequest("Id invalido o no coincide  con el ID de la categoria");
+            Espectaculo espectaculo = _context.Espectaculos.FirstOrDefault(c => c.Id == id);
+            if (id <= 0 || id != espectaculo.Id)
+                return BadRequest("Id invalido o no coincide  con el ID del espectáculo");
 
           
-            Espectaculo espectaculo = _context.Espectaculos.FirstOrDefault(c => c.Id == id);
+           
             if (espectaculo == null)
                 return NotFound("No existe un espectáculo con ese Id");
 

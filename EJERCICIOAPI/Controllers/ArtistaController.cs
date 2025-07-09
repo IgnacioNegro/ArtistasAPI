@@ -26,9 +26,18 @@ using System.Security.Claims;
         [HttpGet]
         public ActionResult<List<Artista>> GetArtistas()
         {
-            return _context.Artistas.ToList();
-        }
+            string? usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(usuarioId))
+                return Unauthorized("Usuario no autenticado");
 
+            int idUsuario = int.Parse(usuarioId);
+
+            var artistas = _context.Artistas
+                .Where(a => a.UsuarioId == idUsuario)
+                .ToList();
+
+            return Ok(artistas);
+        }
         // GET: api/Artistas/5
         [HttpGet("{id}")]
         public ActionResult<Artista> GetArtista(int id)
