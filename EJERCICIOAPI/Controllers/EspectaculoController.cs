@@ -25,18 +25,23 @@ namespace EJERCICIOAPI.Controllers
             _context = context;
         }
 
-           [HttpGet]
-        public ActionResult<List<EspectaculoDTO>> GetEspectaculos()
+        [HttpGet]
+        public ActionResult<List<EspectaculoRecibirDTO>> GetEspectaculos()
         {
-            List<Espectaculo> espectaculos = _context.Espectaculos
-                .Include(e => e.Artista)
-                .ToList();
+            List<Espectaculo> espectaculos = _context.Espectaculos.Include(e => e.Artista).ToList();
 
-            List<EspectaculoDTO> respuestaEspectaculos = new List<EspectaculoDTO>();
+            if (espectaculos == null)
+            {
+                return NotFound("No se encontraron espectaculos");
+            }
+
+
+            List<EspectaculoRecibirDTO> respuestaEspectaculos = new List<EspectaculoRecibirDTO>();
+
 
             foreach (var espectaculo in espectaculos)
             {
-                var dto = new EspectaculoDTO
+                var dto = new EspectaculoRecibirDTO
                 {
                     Id = espectaculo.Id,
                     Titulo = espectaculo.Titulo,
@@ -46,33 +51,41 @@ namespace EJERCICIOAPI.Controllers
                 };
 
                 respuestaEspectaculos.Add(dto);
+
             }
+
+
 
             return respuestaEspectaculos;
         }
 
 
         [HttpGet("{id}")]
-
         public ActionResult<Espectaculo> GetEspectaculo(int id)
         {
             if (id <= 0)
-            {
-                return BadRequest("Id no puede ser menor o igual a 0");
-            }
+                return BadRequest("Id no puede ser menor o igual a cero");
 
-            var espectaculo = _context.Espectaculos.Include(e => e.Artista).FirstOrDefault(c => c.Id == id); ;
+            Espectaculo? espectaculo = _context.Espectaculos
+                .Include(e => e.Artista)
+                .FirstOrDefault(e => e.Id == id);
+
             if (espectaculo == null)
-                return NotFound($"Espectaculo con ID {id} no fue encontrado ");
+                return NotFound($"Espectáculo con Id ({id}) no fue encontrado");
 
-            return Ok(espectaculo);
+            EspectaculoRecibirDTO espectaculoDTO = new EspectaculoRecibirDTO
+            {
+                Id = espectaculo.Id,
+                Titulo = espectaculo.Titulo,
+                Fechayhora = espectaculo.Fechayhora,
+                ArtistaId = espectaculo.ArtistaId
+            };
 
-
-
+            return Ok(espectaculoDTO);
         }
 
         [HttpPost]
-        public ActionResult<Espectaculo> PostEspectaculo([FromBody] EspectaculoDTO parametrosEspectaculo)
+        public ActionResult<Espectaculo> PostEspectaculo([FromBody] EspectaculoCrearDTO parametrosEspectaculo)
         {
             if (parametrosEspectaculo == null)
                 return BadRequest("El cuerpo  del request esta vacío");
@@ -84,32 +97,35 @@ namespace EJERCICIOAPI.Controllers
             if (espectaculoExistenste != null)
                 return BadRequest("Ya existe un espectaculo con ese nombre");
 
+
+            Espectaculo nuevoEspectaculo = new Espectaculo
+            {
+                Titulo = parametrosEspectaculo.Titulo,
+                Fechayhora = parametrosEspectaculo.Fechayhora,
+                ArtistaId = parametrosEspectaculo.ArtistaId,
+              
+            };
+
+
+            _context.Espectaculos.Add(nuevoEspectaculo);
+
             try
             {
-                Espectaculo nuevoEspectaculo = new Espectaculo
-                {
-                    Titulo = parametrosEspectaculo.Titulo,
-                    Fechayhora = parametrosEspectaculo.Fechayhora,
-                    ArtistaId = parametrosEspectaculo.ArtistaId
-                };
-
-                _context.Espectaculos.Add(nuevoEspectaculo);
                 _context.SaveChanges();
-
-                return (nuevoEspectaculo);
+                parametrosEspectaculo.Id = nuevoEspectaculo.Id;
+                return Ok(parametrosEspectaculo);
             }
 
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
 
-
             }
         }
-    }
-}
- /*       [HttpPut("{id}")]
-        public ActionResult<Espectaculo> PutEspectaculo(int id, [FromBody] Espectaculo parametrosEspectaculo)
+
+
+        [HttpPut("{id}")]
+        public ActionResult<Espectaculo> PutEspectaculo(int id, [FromBody] EspectaculoCrearDTO parametrosEspectaculo)
         {
             if (parametrosEspectaculo == null)
                 return BadRequest("El cuerpo del request estaba vacío");
@@ -117,9 +133,60 @@ namespace EJERCICIOAPI.Controllers
             if (id <= 0 || id != parametrosEspectaculo.Id)
                 return BadRequest("Id invalido o no coincide  con el ID de la categoria");
 
-            if (Espectaculo=)
+          
+            Espectaculo espectaculo = _context.Espectaculos.FirstOrDefault(c => c.Id == id);
+            if (espectaculo == null)
+                return NotFound("No existe un espectáculo con ese Id");
+
+            if (ModelState.IsValid == false)
+                return BadRequest(ModelState);
+
+            Artista? artista = _context.Artistas.FirstOrDefault(a => a.Id == parametrosEspectaculo.ArtistaId);
+            if (artista == null)
+            {
+                return BadRequest("El artista no existe o no es válido. Por favor, verifique el ID del artista.");
+            }
+            espectaculo.Titulo = parametrosEspectaculo.Titulo;
+            espectaculo.Fechayhora = parametrosEspectaculo.Fechayhora;
+            espectaculo.ArtistaId = parametrosEspectaculo.ArtistaId;
+            try
+            {
+                _context.SaveChanges();
+                espectaculo.Id= parametrosEspectaculo.Id;
+                return Ok(parametrosEspectaculo);
+
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult<bool> DeleteEspectaculo(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Id no puede ser menor o igual a cero");
+
+            Espectaculo? espectaculo = _context.Espectaculos.FirstOrDefault(c => c.Id == id);
+            if (espectaculo == null)
+                return NotFound($"No existe un espectáculo con Id ({id})");
+
+            _context.Espectaculos.Remove(espectaculo);
+            try
+            {
+                _context.SaveChanges();
+                return Ok(espectaculo);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
+
+    
+
+
 }
-*/

@@ -95,6 +95,10 @@ namespace EJERCICIOAPI.Migrations
                     b.Property<int>("ArtistaId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ArtistaNombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Fechayhora")
                         .HasColumnType("datetime2");
 

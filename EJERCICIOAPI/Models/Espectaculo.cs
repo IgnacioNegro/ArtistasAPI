@@ -8,9 +8,11 @@ namespace EJERCICIOAPI.Models
         public int Id { get; set; }
         public string Titulo { get; set; }
         public DateTime Fechayhora { get; set; }
-        public Artista? Artista { get; set; } 
+        public Artista? Artista { get; set; }
 
         public int ArtistaId { get; set; }
+
+        public string ArtistaNombre {get;set;}
 
     }
 }

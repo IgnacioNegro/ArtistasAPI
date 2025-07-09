@@ -2,7 +2,7 @@
 
 namespace EJERCICIOAPI.Models.DTOs
 {
-    public class EspectaculoDTO
+    public class EspectaculoCrearDTO
     {
         public int Id { get; set; }
 
@@ -15,7 +15,6 @@ namespace EJERCICIOAPI.Models.DTOs
         [Required]
         public int ArtistaId { get; set; }
 
-        [Required]
-        public string ArtistaNombre { get; set; } = string.Empty;
+
     }
 }

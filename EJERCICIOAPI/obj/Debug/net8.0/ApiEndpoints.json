@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "Artistas.Controllers.ArtistasController",
+    "ContainingType": "EJERCICIOAPI.Controllers.ArtistasController",
     "Method": "GetArtistas",
     "RelativePath": "api/Artistas",
     "HttpMethod": "GET",
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "ContainingType": "Artistas.Controllers.ArtistasController",
+    "ContainingType": "EJERCICIOAPI.Controllers.ArtistasController",
     "Method": "PostArtista",
     "RelativePath": "api/Artistas",
     "HttpMethod": "POST",
@@ -29,13 +29,13 @@
     "Parameters": [
       {
         "Name": "parametrosArtista",
-        "Type": "Artistas.Models.DTOs.ArtistaDTO",
+        "Type": "EJERCICIOAPI.Models.DTOs.ArtistaDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "EJERCICIOAPI.Models.Artista",
+        "Type": "EJEMPLOAPI.Models.DTOs.RespuestaArtistaDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -46,7 +46,7 @@
     ]
   },
   {
-    "ContainingType": "Artistas.Controllers.ArtistasController",
+    "ContainingType": "EJERCICIOAPI.Controllers.ArtistasController",
     "Method": "GetArtista",
     "RelativePath": "api/Artistas/{id}",
     "HttpMethod": "GET",
@@ -72,7 +72,7 @@
     ]
   },
   {
-    "ContainingType": "Artistas.Controllers.ArtistasController",
+    "ContainingType": "EJERCICIOAPI.Controllers.ArtistasController",
     "Method": "PutArtista",
     "RelativePath": "api/Artistas/{id}",
     "HttpMethod": "PUT",
@@ -86,7 +86,7 @@
       },
       {
         "Name": "parametrosArtista",
-        "Type": "Artistas.Models.DTOs.ArtistaDTO",
+        "Type": "EJERCICIOAPI.Models.DTOs.ArtistaDTO",
         "IsRequired": true
       }
     ],
@@ -103,7 +103,7 @@
     ]
   },
   {
-    "ContainingType": "Artistas.Controllers.ArtistasController",
+    "ContainingType": "EJERCICIOAPI.Controllers.ArtistasController",
     "Method": "DeleteArtista",
     "RelativePath": "api/Artistas/{id}",
     "HttpMethod": "DELETE",
@@ -131,14 +131,14 @@
   {
     "ContainingType": "EJERCICIOAPI.Controllers.CategoriaController",
     "Method": "GetCategorias",
-    "RelativePath": "api/categorias_artistas",
+    "RelativePath": "api/Categoria",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[EJERCICIOAPI.Models.Categoria, EJERCICIOAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[EJERCICIOAPI.Models.DTOs.CategoriaDTO, EJERCICIOAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -151,20 +151,20 @@
   {
     "ContainingType": "EJERCICIOAPI.Controllers.CategoriaController",
     "Method": "PostCategoria",
-    "RelativePath": "api/categorias_artistas",
+    "RelativePath": "api/Categoria",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "categoria",
-        "Type": "EJERCICIOAPI.Models.Categoria",
+        "Name": "parametrosCategoria",
+        "Type": "EJERCICIOAPI.Models.DTOs.CategoriaPostDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "EJERCICIOAPI.Models.Categoria",
+        "Type": "EJERCICIOAPI.Models.DTOs.CategoriaDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -177,7 +177,7 @@
   {
     "ContainingType": "EJERCICIOAPI.Controllers.CategoriaController",
     "Method": "GetCategoria",
-    "RelativePath": "api/categorias_artistas/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -190,7 +190,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "EJERCICIOAPI.Models.Categoria",
+        "Type": "EJERCICIOAPI.Models.DTOs.CategoriaDTO",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -203,7 +203,7 @@
   {
     "ContainingType": "EJERCICIOAPI.Controllers.CategoriaController",
     "Method": "PutCategoria",
-    "RelativePath": "api/categorias_artistas/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -214,17 +214,27 @@
         "IsRequired": true
       },
       {
-        "Name": "categoria",
-        "Type": "EJERCICIOAPI.Models.Categoria",
+        "Name": "parametrosCategoria",
+        "Type": "EJERCICIOAPI.Models.DTOs.CategoriaPostDTO",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.DTOs.CategoriaDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "EJERCICIOAPI.Controllers.CategoriaController",
     "Method": "DeleteCategoria",
-    "RelativePath": "api/categorias_artistas/{id}",
+    "RelativePath": "api/Categoria/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -235,6 +245,197 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.EspectaculoController",
+    "Method": "GetEspectaculos",
+    "RelativePath": "api/Espectaculo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[EJERCICIOAPI.Models.DTOs.EspectaculoRecibirDTO, EJERCICIOAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.EspectaculoController",
+    "Method": "PostEspectaculo",
+    "RelativePath": "api/Espectaculo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "parametrosEspectaculo",
+        "Type": "EJERCICIOAPI.Models.DTOs.EspectaculoCrearDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.Espectaculo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.EspectaculoController",
+    "Method": "GetEspectaculo",
+    "RelativePath": "api/Espectaculo/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.Espectaculo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.EspectaculoController",
+    "Method": "PutEspectaculo",
+    "RelativePath": "api/Espectaculo/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "parametrosEspectaculo",
+        "Type": "EJERCICIOAPI.Models.DTOs.EspectaculoCrearDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.Espectaculo",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.EspectaculoController",
+    "Method": "DeleteEspectaculo",
+    "RelativePath": "api/Espectaculo/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Boolean",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.UsuariosController",
+    "Method": "PostUsuario",
+    "RelativePath": "api/Usuarios",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "registroUsuarioDTO",
+        "Type": "EJERCICIOAPI.Models.DTOs.RegistroUsuarioDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.Usuario",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "EJERCICIOAPI.Controllers.UsuariosController",
+    "Method": "PostLogin",
+    "RelativePath": "api/Usuarios/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginUsuarioDTO",
+        "Type": "EJERCICIOAPI.Models.DTOs.LoginUsuarioDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EJERCICIOAPI.Models.Usuario",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]
